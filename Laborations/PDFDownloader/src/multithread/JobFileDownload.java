@@ -9,10 +9,12 @@ import java.net.URL;
 public class JobFileDownload implements Runnable {
 	private URL url;
 	private String fileName;
+	private Callback callback;
 	
-	public JobFileDownload(URL url, String fileName) {
+	public JobFileDownload(URL url, String fileName, Callback callback) {
 		this.url = url;
 		this.fileName = fileName;
+		this.callback = callback;
 	}
 
 	public void run() {
@@ -30,10 +32,11 @@ public class JobFileDownload implements Runnable {
 			while ((b = bis.read()) != -1) {
 				fout.write(b);
 			}
-			
+
 			bis.close();
 			fout.flush();
 			fout.close();
+			callback.isDone();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
