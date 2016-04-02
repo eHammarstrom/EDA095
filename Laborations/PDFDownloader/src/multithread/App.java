@@ -48,22 +48,20 @@ public class App {
 				}
 			}
 
-			Stack<JobFileDownload> jfds = new Stack<JobFileDownload>();
+
+			Stack<DownloadRunner> jfds = new Stack<DownloadRunner>();
 			for (Entry<String, URL> entry : pdfs.entrySet()) {
-				jfds.push(new JobFileDownload(entry.getValue(), "multithread/" + entry.getKey(), ts));
+				jfds.push(new DownloadRunner(entry.getValue(), "multithread/" + entry.getKey(), ts));
 			}
 
-			JobFileDownload temp = null;
+			StealingThreadPool stp = new StealingThreadPool();
+			DownloadRunner temp = null;
 			while (!jfds.isEmpty()) {
-				try {
-					temp = jfds.pop();
-					Thread t = new Thread(temp);
-					t.start();
-				} catch (Exception e) {
-					if (jfds != null) {
-						jfds.push(temp);
-					}
-					e.printStackTrace();
+				temp = jfds.pop();
+				if (!stp.add(temp)) {
+					jfds.push(temp);
+				} else {
+					threadsActive++;
 				}
 			}
 		} catch (IOException e) {
@@ -73,10 +71,11 @@ public class App {
 		while (true) {
 			if (ts.getFinished() == threadsActive) {
 				long endTime = System.nanoTime();
-
-				long duration = endTime - startTime;
-
-				System.out.println(duration / 1000000 + "ms");
+				
+				long timeSpent = (endTime - startTime) / 1000000;
+				
+				System.out.println(timeSpent + "ms");
+				return;
 			}
 		}
 	}

@@ -77,9 +77,10 @@ public class App {
 			fout = new FileOutputStream(file);
 			bis = new BufferedInputStream(url.openStream());
 			
-			int b;
-			while ((b = bis.read()) != -1) {
-				fout.write(b);
+			byte[] buffer = new byte[4096];
+			int bytes;
+			while ((bytes = bis.read(buffer)) != -1) {
+				fout.write(buffer, 0, bytes);
 			}
 			
 			bis.close();
