@@ -13,6 +13,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class App {
+	
+	public static URL createURL(String url, URL base) {
+		try {
+			return new URL(base, url);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
 	public static void main(String[] args) {
 		if (args.length < 1 || args.length > 1) {
@@ -43,11 +51,13 @@ public class App {
 			Matcher m;
 			while ((line = br.readLine()) != null) {
 				m = pattern.matcher(line);
-				if (m.find()) {
-					pdfs.put(m.group(3), new URL(m.group(2) + m.group(3)));
+				while (m.find()) {
+					URL temp = createURL(m.group(2) + m.group(3), target);
+					if (temp != null) {
+						pdfs.put(m.group(3), temp);
+					}
 				}
 			}
-
 
 			Stack<DownloadRunner> jfds = new Stack<DownloadRunner>();
 			for (Entry<String, URL> entry : pdfs.entrySet()) {
@@ -63,6 +73,7 @@ public class App {
 				} else {
 					threadsActive++;
 				}
+				System.out.println(jfds.size());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

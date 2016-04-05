@@ -42,7 +42,7 @@ public class App {
 			Matcher m;
 			while ((line = br.readLine()) != null) {
 				m = pattern.matcher(line);
-				if (m.find()) {
+				while (m.find()) {
 					pdfs.put(m.group(3), new URL(m.group(2) + m.group(3)));
 				}
 			}

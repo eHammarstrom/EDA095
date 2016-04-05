@@ -23,6 +23,7 @@ public class DownloadRunner implements Runnable {
 		BufferedInputStream bis;
 
 		try {
+			System.out.println(fileName + " started!");
 			file = new File(fileName);
 			file.createNewFile();
 			fout = new FileOutputStream(file);
@@ -39,9 +40,10 @@ public class DownloadRunner implements Runnable {
 			fout.close();
 
 			System.out.println(fileName + " done!");
-			callback.isDone();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			callback.isDone();
 		}
 	}
 
