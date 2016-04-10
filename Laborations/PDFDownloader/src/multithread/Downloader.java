@@ -15,6 +15,7 @@ public class Downloader {
 		try {
 			String outPath = dir + "/" + fileName;
 			System.out.println(outPath + " started!");
+			new File(dir).mkdirs();
 			file = new File(outPath);
 			file.createNewFile();
 			fout = new FileOutputStream(file);

@@ -37,11 +37,11 @@ public class App {
 //			}
 
 			/*** Runnable Runner with limited threads and URL list ***/
-			SyncList list = new SyncList(pdfs);
-			multithread.ListRunnable.Runner runner = new multithread.ListRunnable.Runner(list, ts);
-			for (int i = 0; i < 9; i++) {
-				new Thread(runner).start();
-			}
+//			SyncList list = new SyncList(pdfs);
+//			multithread.ListRunnable.Runner runner = new multithread.ListRunnable.Runner(list, ts);
+//			for (int i = 0; i < 9; i++) {
+//				new Thread(runner).start();
+//			}
 			
 			
 			/*** Executor impl. with multithread.Runnable ***/
