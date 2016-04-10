@@ -22,7 +22,7 @@ public class Runner implements Runnable {
 			int lastOccurance = url.toString().lastIndexOf("/") + 1;
 			String fileName = url.toString().substring(lastOccurance);
 
-			Downloader.download(url, fileName, "Runnable");
+			Downloader.download(url, fileName, "ListRunnable");
 		}
 		callback.isDone();
 	}

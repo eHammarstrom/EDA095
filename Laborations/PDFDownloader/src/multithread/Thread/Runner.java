@@ -18,7 +18,7 @@ public class Runner extends Thread {
 
 	public void run() {
 		callback.isRunning();
-		Downloader.download(url, fileName, "Runnable");
+		Downloader.download(url, fileName, "Thread");
 		callback.isDone();
 	}
 
