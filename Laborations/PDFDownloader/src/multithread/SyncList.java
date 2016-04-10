@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 public class SyncList extends LinkedList<URL> {
-	private volatile LinkedList<URL> list;
+	private LinkedList<URL> list;
 	private volatile int size;
 	private volatile int popped;
 
@@ -17,7 +17,7 @@ public class SyncList extends LinkedList<URL> {
 	}
 	
 	@Override
-	public URL pop() {
+	public synchronized URL pop() {
 		popped++;
 		return list.pop();
 	}
