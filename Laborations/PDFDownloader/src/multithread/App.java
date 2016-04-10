@@ -1,36 +1,21 @@
 package multithread;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.Stack;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class App {
 	
-	public static URL createURL(String url, URL base) {
-		try {
-			return new URL(base, url);
-		} catch (Exception e) {
-			return null;
-		}
-	}
+	
 
 	public static void main(String[] args) {
 		if (args.length < 1 || args.length > 1) {
 			throw new IllegalArgumentException("Must provide an address");
 		}
-
-		long startTime = System.nanoTime();
-
-		int threadsActive = 0;
-		ThreadStatus ts = new ThreadStatus();
 
 		URL target;
 
@@ -40,55 +25,40 @@ public class App {
 			throw new IllegalArgumentException("Must pass URL as https://regex101.com/");
 		}
 
+		long startTime = System.nanoTime();
+		ThreadStatus ts = new ThreadStatus();
+
 		try {
-			InputStream is = target.openStream();
+			HashMap<String, URL> pdfs = Scraper.getFiles(target, "pdf");
+			
+			/*** Extending threads; multithread.Thread ***/
+//			for (Entry<String, URL> entry : pdfs.entrySet()) {
+//				new multithread.Thread.Runner(entry.getValue(), entry.getKey(), ts).start();
+//			}
 
-			BufferedReader br = new BufferedReader(new InputStreamReader(is));
+			/*** Runnable Runner with limited threads and URL list ***/
+//			SyncList list = new SyncList(pdfs);
+//			multithread.ListRunnable.Runner runner = new multithread.ListRunnable.Runner(list, ts);
+//			for (int i = 0; i < 9; i++) {
+//				new Thread(runner).start();
+//			}
+			
+			
+			/*** Executor impl. with multithread.Runnable ***/
+//			ExecutorService ex = Executors.newFixedThreadPool(10);
+//			for (Entry<String, URL> entry : pdfs.entrySet()) {
+//				ex.submit(new multithread.Runnable.Runner(entry.getValue(), entry.getKey(), ts));
+//			}
+//			ex.shutdown();
 
-			HashMap<String, URL> pdfs = new HashMap<String, URL>();
-			String line;
-			Pattern pattern = Pattern.compile("(?i)(href=\")(.+?)([^\\/]*.pdf)(\")");
-			Matcher m;
-			while ((line = br.readLine()) != null) {
-				m = pattern.matcher(line);
-				while (m.find()) {
-					URL temp = createURL(m.group(2) + m.group(3), target);
-					if (temp != null) {
-						pdfs.put(m.group(3), temp);
-					}
-				}
-			}
-
-			Stack<DownloadRunner> jfds = new Stack<DownloadRunner>();
-			for (Entry<String, URL> entry : pdfs.entrySet()) {
-				jfds.push(new DownloadRunner(entry.getValue(), "multithread/" + entry.getKey(), ts));
-			}
-
-			StealingThreadPool stp = new StealingThreadPool();
-			DownloadRunner temp = null;
-			while (!jfds.isEmpty()) {
-				temp = jfds.pop();
-				if (!stp.add(temp)) {
-					jfds.push(temp);
-				} else {
-					threadsActive++;
-				}
-				System.out.println(jfds.size());
-			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		while (true) {
-			if (ts.getFinished() == threadsActive) {
-				long endTime = System.nanoTime();
-				
-				long timeSpent = (endTime - startTime) / 1000000;
-				
-				System.out.println(timeSpent + "ms");
-				return;
-			}
-		}
+		
+		ts.waitForAllThreads();
+		long endTime = System.nanoTime();
+		long timeSpent = (endTime - startTime) / 1000000;
+		System.out.println(timeSpent + "ms");
 	}
 
 }

@@ -6,25 +6,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 
-public class DownloadRunner implements Runnable {
-	private URL url;
-	private String fileName;
-	private Callback callback;
-	
-	public DownloadRunner(URL url, String fileName, Callback callback) {
-		this.url = url;
-		this.fileName = fileName;
-		this.callback = callback;
-	}
-
-	public void run() {
+public class Downloader {
+	public static void download(URL url, String fileName, String dir) {
 		File file;
 		FileOutputStream fout;
 		BufferedInputStream bis;
 
 		try {
-			System.out.println(fileName + " started!");
-			file = new File(fileName);
+			String outPath = dir + "/" + fileName;
+			System.out.println(outPath + " started!");
+			file = new File(outPath);
 			file.createNewFile();
 			fout = new FileOutputStream(file);
 			bis = new BufferedInputStream(url.openStream());
@@ -39,12 +30,9 @@ public class DownloadRunner implements Runnable {
 			fout.flush();
 			fout.close();
 
-			System.out.println(fileName + " done!");
+			System.out.println(outPath + " done!");
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			callback.isDone();
 		}
 	}
-
 }
