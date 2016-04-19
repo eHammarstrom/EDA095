@@ -7,7 +7,7 @@ import java.net.Socket;
 
 public class ServerListener extends Thread {
 	private final static int BUFFER = 1024 * 4;
-	
+
 	private Socket sock;
 	private ServerRunner sr;
 	private InputStream is;
@@ -37,39 +37,37 @@ public class ServerListener extends Thread {
 
 	public void run() {
 		System.out.println(this.getName() + " Listening.");
-		for (;;) {
-			byte[] buffer = new byte[BUFFER];
+		byte[] buffer = new byte[BUFFER];
 
-			try {
-				while (is.read(buffer) != -1) {
-					String message = new String(buffer);
-					System.out.println(this.getName() + " Received: " + message);
+		try {
+			while (is.read(buffer) != -1) {
+				String message = new String(buffer);
+				System.out.println(this.getName() + " Received: " + message);
 
-					System.out.println(message.toLowerCase().substring(0, 2));
-					switch (message.toLowerCase().substring(0, 2)) {
-					case "e:":
-						os.write(message.substring(message.indexOf(":") + 1).getBytes());
-						break;
-					case "m:":
-						sr.write(message.substring(message.indexOf(":") + 1));
-						break;
-					case "q:":
-						sr.done(this);
-						return;
-					}
-					
-					buffer = new byte[BUFFER];
+				System.out.println(message.toLowerCase().substring(0, 2));
+				switch (message.toLowerCase().substring(0, 2)) {
+				case "e:":
+					os.write(message.substring(message.indexOf(":") + 1).getBytes());
+					break;
+				case "m:":
+					sr.write(message.substring(message.indexOf(":") + 1));
+					break;
+				case "q:":
+					sr.done(this);
+					return;
 				}
 
-				is.close();
-				os.close();
-				sock.close();
-				System.out.println(this.getName() + " Closed.");
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				sr.done(this);
+				buffer = new byte[BUFFER];
 			}
+
+			is.close();
+			os.close();
+			sock.close();
+			System.out.println(this.getName() + " Closed.");
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			sr.done(this);
 		}
 	}
 

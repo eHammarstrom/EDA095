@@ -1,6 +1,6 @@
 package ServerIntegration;
 
-public class ServerRunner extends Thread {
+public class ServerRunner {
 	private ClientManager cm;
 
 	public ServerRunner(ClientManager cm) {
@@ -8,17 +8,11 @@ public class ServerRunner extends Thread {
 	}
 
 	public synchronized void write(String message) {
-		System.out.println(this.getName() + " I am ServerRunner, someone is writing: " + message);
 		cm.write(message);
 	}
 	
 	public void done(ServerListener sl) {
 		cm.remove(sl);
-	}
-
-	public void run() {
-		System.out.println(this.getName() + " I am ServerRunner, listening.");
-		for (;;) { }
 	}
 
 }

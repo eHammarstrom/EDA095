@@ -25,7 +25,7 @@ public class Main {
 			try {
 				for (;;) { 
 					String out = mb.clear();
-					if (out != null) System.out.println(out);
+					System.out.println(out);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

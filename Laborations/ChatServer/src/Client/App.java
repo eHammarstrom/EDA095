@@ -11,8 +11,6 @@ public class App {
 		if (args.length < 2 || args.length > 2)
 			throw new IllegalArgumentException("java App host port");
 		
-		App app = new App();
-
 		try {
 			Socket sock = new Socket(args[0], Integer.parseInt(args[1]));
 			OutputStream os = sock.getOutputStream();

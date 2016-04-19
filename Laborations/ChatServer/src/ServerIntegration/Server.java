@@ -11,7 +11,6 @@ public class Server {
 	public static void main(String[] args) {
 		ClientManager cm = new ClientManager();
 		ServerRunner sr = new ServerRunner(cm);
-		sr.start();
 
 		try {
 			ServerSocket ss = new ServerSocket(30000);
