@@ -1,7 +1,9 @@
 package ServerIntegration;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 
@@ -9,13 +11,13 @@ public class ServerListener extends Thread {
 	private final static int BUFFER = 1024 * 4;
 
 	private Socket sock;
-	private ServerRunner sr;
+	private ClientManager cm;
 	private InputStream is;
 	private OutputStream os;
 
-	public ServerListener(Socket sock, ServerRunner sr) {
+	public ServerListener(Socket sock, ClientManager cm) {
 		this.sock = sock;
-		this.sr = sr;
+		this.cm = cm;
 
 		try {
 			is = sock.getInputStream();
@@ -37,27 +39,25 @@ public class ServerListener extends Thread {
 
 	public void run() {
 		System.out.println(this.getName() + " Listening.");
-		byte[] buffer = new byte[BUFFER];
+		BufferedReader br = new BufferedReader(new InputStreamReader(is));
+		String message;
 
 		try {
-			while (is.read(buffer) != -1) {
-				String message = new String(buffer);
+			while ((message = br.readLine()) != null) {
 				System.out.println(this.getName() + " Received: " + message);
 
-				System.out.println(message.toLowerCase().substring(0, 2));
 				switch (message.toLowerCase().substring(0, 2)) {
 				case "e:":
-					os.write(message.substring(message.indexOf(":") + 1).getBytes());
+					os.write((message.substring(message.indexOf(":") + 1) + "\n").getBytes());
 					break;
 				case "m:":
-					sr.write(message.substring(message.indexOf(":") + 1));
+					cm.write(message.substring(message.indexOf(":") + 1) + "\n");
 					break;
 				case "q:":
-					sr.done(this);
+					cm.remove(this);
+					sock.close();
 					return;
 				}
-
-				buffer = new byte[BUFFER];
 			}
 
 			is.close();
@@ -67,7 +67,7 @@ public class ServerListener extends Thread {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			sr.done(this);
+			cm.remove(this);
 		}
 	}
 

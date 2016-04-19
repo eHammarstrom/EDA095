@@ -20,7 +20,7 @@ public class App {
 
 			while (sc.hasNext()) {
 				String message = sc.nextLine();
-				os.write(message.getBytes());
+				os.write((message + "\n").getBytes());
 				os.flush();
 				if (message.substring(0, 2).equalsIgnoreCase("q:")) return;
 			}

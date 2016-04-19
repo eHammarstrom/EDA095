@@ -21,6 +21,8 @@ public class ClientListener extends Thread {
 				System.out.println(new String(buffer));
 				buffer = new byte[BUFFER];
 			}
+			
+			System.exit(0);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
