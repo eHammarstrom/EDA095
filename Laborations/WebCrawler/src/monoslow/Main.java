@@ -76,9 +76,10 @@ public class Main {
 						if (cache.contains(target)) continue;
 
 						if (target.getProtocol().equalsIgnoreCase("mailto")) {
+
 							emails.add(target.getFile());
-							System.out.println(target.getFile());
-							System.out.println("***************************************************");
+							System.out.println("Mail address: " + target.getFile());
+
 						} else if (target.getProtocol().equalsIgnoreCase("http") ||
 								target.getProtocol().equalsIgnoreCase("https")) {
 
