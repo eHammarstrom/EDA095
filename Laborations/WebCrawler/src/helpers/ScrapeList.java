@@ -1,27 +1,28 @@
 package helpers;
 
 import java.net.URL;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
-public class CacheList {
-	LinkedList<String> cache;
-	LinkedList<URL> targets;
+public class ScrapeList {
+	private volatile HashSet<URL> cache;
+	private volatile LinkedList<URL> targets;
 	
-	public CacheList() {
-		cache = new LinkedList<String>();
+	public ScrapeList() {
+		cache = new HashSet<URL>();
 		targets = new LinkedList<URL>();
 	}
 	
-	public synchronized void push(URL url) {
-		if (!cache.contains(url.toString())) {
-			cache.push(url.toString());
-			targets.push(url);
-		}
+	public synchronized boolean push(URL url) {
+		if (cache.add(url))
+			return targets.add(url);
+		else
+			return false;
 	}
 	
 	public synchronized boolean contains(URL url) {
-		return cache.contains(url.toString());
+		return cache.contains(url);
 	}
 	
 	public synchronized URL pop() throws NoSuchElementException {
@@ -32,7 +33,7 @@ public class CacheList {
 		return cache.size();
 	}
 	
-	public synchronized LinkedList<String> getCache() {
+	public synchronized HashSet<URL> getCache() {
 		return cache;
 	}
 

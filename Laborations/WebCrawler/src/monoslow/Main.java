@@ -14,14 +14,14 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import helpers.CacheList;
+import helpers.ScrapeList;
 
 public class Main {
 
 	public static void main(String[] args) {
 		URL root;
 
-		CacheList cache = new CacheList();
+		ScrapeList cache = new ScrapeList();
 		LinkedList<String> emails = new LinkedList<String>();
 		
 		long startTime = System.currentTimeMillis();
@@ -52,26 +52,26 @@ public class Main {
 				}
 				
 				System.out.println("");
-				System.out.println("CACHE SIZE: " + cache.size());
 
 				Elements elements = doc.getElementsByTag("a");
 				elements.addAll(doc.getElementsByTag("frame"));
 				
-				System.out.println("GRABBED ELEMENTS.");
-
 				URL target = null;
 				long lastStamp = System.currentTimeMillis();
 				for (int i = 0; i < elements.size(); i++) {
 					try {
 						Element element = elements.get(i);
-						System.out.println("Time taken: " + (System.currentTimeMillis() - lastStamp) + "ms");
+						System.out.print("Time taken: " + (System.currentTimeMillis() - lastStamp) + "ms");
+						System.out.println("\t Current cache size: " + cache.size());
 						lastStamp = System.currentTimeMillis();
 						System.out.println("Processing: " + element.toString());
 
-						if (element.tagName().equalsIgnoreCase("a"))
-							target = new URL(root, element.attr("href"));
+						if (element.hasAttr("href"))
+							target = new URL(element.attr("abs:href"));
+						else if (element.hasAttr("src"))
+							target = new URL(element.attr("abs:src"));
 						else
-							target = new URL(root, element.attr("src"));
+							continue;
 						
 						if (cache.contains(target)) continue;
 
@@ -86,19 +86,21 @@ public class Main {
 							HttpURLConnection connection = (HttpURLConnection) target.openConnection();
 
 							connection.setRequestMethod("HEAD");
+							connection.setReadTimeout(1200);
+							connection.setConnectTimeout(1200);
 							connection.connect();
 
 							String contentType = connection.getContentType();
 
 							if (contentType != null && contentType.contains("text/html")) {
 								cache.push(target);
-								System.out.println("Produced URL: " + target.toString());
+								System.out.println("URL working: " + target.toString());
+							} else {
+								System.out.println("URL not working: " + target.toString());
 							}
 						}
 					} catch (IOException e) { }
 				}
-
-				if (target != null) root = target;
 			}
 
 		} catch (Exception e) {
@@ -125,7 +127,7 @@ public class Main {
 				PrintWriter pwLink = new PrintWriter(linkFile);
 				PrintWriter pwEmail = new PrintWriter(emailFile);
 
-				for (String s : cache.getCache()) pwLink.println(s);
+				for (URL url : cache.getCache()) pwLink.println(url.toString());
 				pwLink.close();
 				for (String s : emails) pwEmail.println(s);
 				pwEmail.close();
