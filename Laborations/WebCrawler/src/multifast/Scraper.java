@@ -77,7 +77,6 @@ public class Scraper implements Runnable {
 							connection.setRequestMethod("HEAD");
 							connection.setReadTimeout(MAX_LINK_DELAY);
 							connection.setConnectTimeout(MAX_LINK_DELAY);
-							connection.connect();
 							
 							String contentType = connection.getContentType();
 							

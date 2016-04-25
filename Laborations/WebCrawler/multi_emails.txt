@@ -3,7 +3,6 @@ johan.gunnarsson@er.lu.se
 servicedesk@lu.se
 lu@lu.se
 samverkan@lu.se
-birger.swahn@cs.lth.se
 expedition@cs.lth.se
 studievagledning@stu.lu.se
 Jonas.Wisbrant@cs.lth.se

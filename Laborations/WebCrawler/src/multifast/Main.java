@@ -40,6 +40,7 @@ public class Main {
 		
 		while (cache.size() <= 2000) { }
 		executor.shutdown();
+		while (!executor.isShutdown()) { }
 
 		System.out.println("Time taken: " + (System.currentTimeMillis() - startTime) / 1000 + "s");
 
