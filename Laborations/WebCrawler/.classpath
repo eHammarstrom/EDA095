@@ -2,6 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="dependencies/jsoup-1.9.1.jar"/>
+	<classpathentry kind="lib" path="/h/d3/j/dic14eh2/Downloads/jsoup-1.9.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

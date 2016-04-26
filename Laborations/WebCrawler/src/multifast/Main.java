@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import helpers.EmailList;
 import helpers.ScrapeList;
 
 public class Main {
@@ -26,7 +26,7 @@ public class Main {
 		}
 
 		ScrapeList cache = new ScrapeList();
-		HashSet<String> emails = new HashSet<String>();
+		EmailList<String> emails = new EmailList<String>();
 
 		ExecutorService executor = Executors.newFixedThreadPool(10);
 
@@ -38,7 +38,7 @@ public class Main {
 			executor.execute(new Scraper(cache, emails));
 		}
 		
-		while (cache.size() <= 2000) { }
+		while (cache.remainingScrapes() <= 2000) { }
 		executor.shutdown();
 		while (!executor.isShutdown()) { }
 

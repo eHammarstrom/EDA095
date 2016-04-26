@@ -8,10 +8,12 @@ import java.util.NoSuchElementException;
 public class ScrapeList {
 	private volatile HashSet<URL> cache;
 	private volatile LinkedList<URL> targets;
+	private volatile int scraped;
 	
 	public ScrapeList() {
 		cache = new HashSet<URL>();
 		targets = new LinkedList<URL>();
+		scraped = 0;
 	}
 	
 	public synchronized boolean push(URL url) {
@@ -31,6 +33,14 @@ public class ScrapeList {
 	
 	public synchronized int size() {
 		return cache.size();
+	}
+	
+	public synchronized int remainingScrapes() {
+		return scraped;
+	}
+	
+	public synchronized void successfulScrape() {
+		scraped++;
 	}
 	
 	public synchronized HashSet<URL> getCache() {

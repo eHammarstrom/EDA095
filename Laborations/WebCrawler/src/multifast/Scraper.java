@@ -12,15 +12,16 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import helpers.EmailList;
 import helpers.ScrapeList;
 
 public class Scraper implements Runnable {
 	private static final int MAX_LINK_ACQUIRE = 2000;
 	private static final int MAX_LINK_DELAY = 1200;
 	private ScrapeList cache;
-	private HashSet<String> emails;
+	private EmailList<String> emails;
 
-	public Scraper(ScrapeList cache, HashSet<String> emails) {
+	public Scraper(ScrapeList cache, EmailList<String> emails) {
 		this.cache = cache;
 		this.emails = emails;
 	}
@@ -29,7 +30,7 @@ public class Scraper implements Runnable {
 		String threadName = Thread.currentThread().getName();
 		System.out.println(threadName + " says: Hello world!");
 
-		while (cache.size() <= MAX_LINK_ACQUIRE) {
+		while (cache.remainingScrapes() <= MAX_LINK_ACQUIRE) {
 			try {
 
 				URL root = cache.pop();
@@ -47,6 +48,7 @@ public class Scraper implements Runnable {
 
 				Elements elements = doc.getElementsByTag("a");
 				elements.addAll(doc.getElementsByTag("frame"));
+				
 
 				URL target = null;
 				for (int i = 0; i < elements.size(); i++) {
@@ -88,11 +90,14 @@ public class Scraper implements Runnable {
 										"Cache: "
 										+ cache.size()
 										+ "\t"
+										+ "Target: "
+										+ cache.remainingScrapes()
+										+ "\t"
 										+ threadName.substring(threadName.indexOf("t"))
 										+ " added URL: "
 										+ target.toString());
 								
-								if (cache.size() >= MAX_LINK_ACQUIRE) break;
+								if (cache.remainingScrapes() >= MAX_LINK_ACQUIRE) break;
 
 							}/* else {
 								
@@ -106,6 +111,9 @@ public class Scraper implements Runnable {
 					} catch (IOException e) {
 					}
 				}
+
+				cache.successfulScrape();
+
 			} catch (NoSuchElementException e) {
 			}
 		}
