@@ -38,7 +38,7 @@ public class Main {
 			executor.execute(new Scraper(cache, emails));
 		}
 		
-		while (cache.remainingScrapes() <= 2000) { }
+		while (cache.remainingScrapes() <= 50) { }
 		executor.shutdown();
 		while (!executor.isShutdown()) { }
 

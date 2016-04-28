@@ -16,7 +16,7 @@ import helpers.EmailList;
 import helpers.ScrapeList;
 
 public class Scraper implements Runnable {
-	private static final int MAX_LINK_ACQUIRE = 2000;
+	private static final int MAX_LINK_ACQUIRE = 50;
 	private static final int MAX_LINK_DELAY = 1200;
 	private ScrapeList cache;
 	private EmailList<String> emails;
