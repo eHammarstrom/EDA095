@@ -30,6 +30,7 @@ public class MCServerOffer {
 				exec.submit(new ClientHandler(dp.getAddress(), dp.getPort()));
 				
 				System.out.println("And gave it a thread.");
+				System.out.println("Discovery was sent by: " + dp.getPort());
 			}
 
 		} catch (IOException e) {
