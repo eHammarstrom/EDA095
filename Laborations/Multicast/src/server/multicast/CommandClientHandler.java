@@ -7,12 +7,12 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.Date;
 
-public class ClientHandler implements Runnable {
+public class CommandClientHandler implements Runnable {
 	private DatagramSocket dgSocket;
 	private InetAddress targetAddr;
 	private int targetPort;
 
-	public ClientHandler(InetAddress targetAddr, int targetPort) {
+	public CommandClientHandler(InetAddress targetAddr, int targetPort) {
 		try {
 			dgSocket = new DatagramSocket();
 		} catch (SocketException e) { e.printStackTrace(); }

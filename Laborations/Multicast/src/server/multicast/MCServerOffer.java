@@ -14,8 +14,9 @@ public class MCServerOffer {
 			MulticastSocket ms = new MulticastSocket(4099);
 			InetAddress ia = InetAddress.getByName("experiment.mcast.net");
 			
-			ExecutorService exec = Executors.newWorkStealingPool();
-
+			TimeService timeServer = new TimeService();
+			timeServer.start();
+			
 			ms.joinGroup(ia);
 			
 			while (true) {
@@ -24,13 +25,31 @@ public class MCServerOffer {
 
 				ms.receive(dp);
 				
-				String s = new String(dp.getData(), 0, dp.getLength());
-				System.out.println("Received: " + s);
+				String serviceQuestion = 
+						new String(dp.getData(), 0, dp.getLength(), "UTF-8");
 
-				exec.submit(new ClientHandler(dp.getAddress(), dp.getPort()));
+				System.out.println("Received: " + serviceQuestion +
+						" from " + dp.getAddress() + ":" + dp.getPort());
 				
-				System.out.println("And gave it a thread.");
-				System.out.println("Discovery was sent by: " + dp.getPort());
+				//DatagramPacket answer;
+				switch (serviceQuestion.toLowerCase()) {
+				case "datetime_hello":
+					timeServer.notifyClient(dp);
+					/*
+					byte[] bufAnswer = 
+						("I am " + 
+						InetAddress.getLocalHost().getHostName() +
+						" and I have the datetime service.").getBytes();
+
+					answer = 
+						new DatagramPacket(
+								bufAnswer, bufAnswer.length,
+								dp.getAddress(), dp.getPort());
+
+					ms.send(answer);
+					*/
+					break;
+				}
 			}
 
 		} catch (IOException e) {
