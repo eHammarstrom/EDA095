@@ -1,8 +1,6 @@
 package server.multicast;
 
 import java.net.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.io.*;
 
 public class MCServerOffer {
@@ -11,7 +9,7 @@ public class MCServerOffer {
 		try {
 			System.out.println("Starting threaded MCServerOffer");
 
-			MulticastSocket ms = new MulticastSocket(4099);
+			MulticastSocket ms = new MulticastSocket(6161);
 			InetAddress ia = InetAddress.getByName("experiment.mcast.net");
 			
 			TimeService timeServer = new TimeService();

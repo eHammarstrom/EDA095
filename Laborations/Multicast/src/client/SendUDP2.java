@@ -73,6 +73,8 @@ public class SendUDP2 {
 			
 			System.out.println("Received packet from: " + dgPacketRecv.getAddress() + ":" + dgPacketRecv.getPort());
 			System.out.println("Which said: " + new String(dgPacketRecv.getData(), "UTF-8"));
+			
+			broadCast.close();
 
 			return dgPacketRecv;
 

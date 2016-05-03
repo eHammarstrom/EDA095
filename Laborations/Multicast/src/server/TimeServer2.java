@@ -2,7 +2,9 @@ package server;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class TimeServer2 {
 
@@ -12,9 +14,18 @@ public class TimeServer2 {
 		while (true) {
 			command = receive();
 			
+			Date date = new Date();
 			switch (command.toLowerCase()) {
 			case "datetime":
-				System.out.println(new Date().toString());
+				System.out.println(date.toString());
+				break;
+			case "usdate":
+				DateFormat dfdate = DateFormat.getDateInstance(DateFormat.DEFAULT, Locale.US);
+				System.out.println(dfdate.format(date));
+				break;
+			case "ustime":
+				DateFormat dftime = DateFormat.getTimeInstance(DateFormat.DEFAULT, Locale.US);
+				System.out.println(dftime.format(date));
 				break;
 			case "error":
 				System.out.println("Something went wrong.");
