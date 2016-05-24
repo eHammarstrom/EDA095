@@ -8,9 +8,11 @@ public class Main {
 
         String tarAddr = args[0]; // "130.235.209" on test
 
-        MonoScan ms = new MonoScan();
+        ServerStats servers = new ServerStats();
+        MonoScan ms = new MonoScan(servers);
 
         ms.scan(tarAddr);
+        servers.print();
     }
 
 }
